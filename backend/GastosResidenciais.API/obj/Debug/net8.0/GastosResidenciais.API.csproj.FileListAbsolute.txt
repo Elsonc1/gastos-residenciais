@@ -130,3 +130,4 @@ C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.genruntimeconfig.cache
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\ref\GastosResidenciais.API.dll
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.sourcelink.json
+C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

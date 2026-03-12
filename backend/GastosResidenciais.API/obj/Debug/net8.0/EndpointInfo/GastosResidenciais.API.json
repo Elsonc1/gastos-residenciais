@@ -13,7 +13,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CategoriaDto"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -41,8 +51,65 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriaDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Categorias/{id}": {
+      "get": {
+        "tags": [
+          "Categorias"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoriaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -54,7 +121,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PessoaDto"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -82,8 +159,25 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PessoaDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -106,7 +200,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PessoaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       },
@@ -146,7 +257,34 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PessoaDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       },
@@ -166,8 +304,18 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -179,7 +327,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelatorioPessoasDto"
+                }
+              }
+            }
           }
         }
       }
@@ -191,7 +346,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RelatorioCategoriasDto"
+                }
+              }
+            }
           }
         }
       }
@@ -203,7 +365,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TransacaoDto"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -231,8 +403,65 @@
           }
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Transacoes/{id}": {
+      "get": {
+        "tags": [
+          "Transacoes"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransacaoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -240,6 +469,23 @@
   },
   "components": {
     "schemas": {
+      "CategoriaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "finalidade": {
+            "$ref": "#/components/schemas/FinalidadeCategoria"
+          }
+        },
+        "additionalProperties": false
+      },
       "CriarCategoriaDto": {
         "type": "object",
         "properties": {
@@ -300,12 +546,196 @@
         ],
         "type": "string"
       },
+      "PessoaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "idade": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "RelatorioCategoriasDto": {
+        "type": "object",
+        "properties": {
+          "categorias": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TotalPorCategoriaDto"
+            },
+            "nullable": true
+          },
+          "totalGeralReceitas": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalGeralDespesas": {
+            "type": "number",
+            "format": "double"
+          },
+          "saldoLiquido": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RelatorioPessoasDto": {
+        "type": "object",
+        "properties": {
+          "pessoas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TotalPorPessoaDto"
+            },
+            "nullable": true
+          },
+          "totalGeralReceitas": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalGeralDespesas": {
+            "type": "number",
+            "format": "double"
+          },
+          "saldoLiquido": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
       "TipoTransacao": {
         "enum": [
           "Despesa",
           "Receita"
         ],
         "type": "string"
+      },
+      "TotalPorCategoriaDto": {
+        "type": "object",
+        "properties": {
+          "categoriaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalReceitas": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDespesas": {
+            "type": "number",
+            "format": "double"
+          },
+          "saldo": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TotalPorPessoaDto": {
+        "type": "object",
+        "properties": {
+          "pessoaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nome": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalReceitas": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalDespesas": {
+            "type": "number",
+            "format": "double"
+          },
+          "saldo": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransacaoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "descricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "valor": {
+            "type": "number",
+            "format": "double"
+          },
+          "tipo": {
+            "$ref": "#/components/schemas/TipoTransacao"
+          },
+          "categoriaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "categoriaDescricao": {
+            "type": "string",
+            "nullable": true
+          },
+          "pessoaId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pessoaNome": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

@@ -15,7 +15,8 @@ import RelatoriosCategoriasPage from './pages/Relatorios/RelatoriosCategoriasPag
 function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      {/* future flags suprimem os avisos de deprecação do React Router v6 sobre mudanças no v7 */}
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate to="/pessoas" replace />} />
