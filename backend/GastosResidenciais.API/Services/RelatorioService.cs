@@ -7,8 +7,9 @@ namespace GastosResidenciais.API.Services;
 
 /// <summary>
 /// Serviço de relatórios financeiros.
-/// Calcula totais de receitas, despesas e saldo (receita − despesa)
-/// agrupados por pessoa e por categoria, incluindo os totais gerais consolidados.
+/// A agregação (SUM/GROUP BY) é projetada diretamente no banco via LINQ-to-SQL,
+/// evitando carregar todas as transações em memória.
+/// Pessoas/categorias sem transações aparecem com totais zerados (LEFT JOIN via GroupJoin).
 /// </summary>
 public class RelatorioService : IRelatorioService
 {
@@ -20,31 +21,26 @@ public class RelatorioService : IRelatorioService
     }
 
     /// <summary>
-    /// Agrega as transações de cada pessoa e calcula:
-    ///   - TotalReceitas: soma de todas as transações do tipo Receita.
-    ///   - TotalDespesas: soma de todas as transações do tipo Despesa.
-    ///   - Saldo: TotalReceitas − TotalDespesas (pode ser negativo).
-    /// Ao final, inclui o consolidado de todas as pessoas.
+    /// Agrega as transações no banco por pessoa usando GroupJoin,
+    /// garantindo que pessoas sem transações também apareçam no resultado.
     /// </summary>
-    public async Task<RelatorioPessoasDto> ObterTotaisPorPessoaAsync()
+    public async Task<RelatorioPessoasDto> ObterTotaisPorPessoaAsync(CancellationToken cancellationToken = default)
     {
-        var pessoas = await _context.Pessoas
+        var totais = await _context.Pessoas
             .AsNoTracking()
-            .Include(p => p.Transacoes)
-            .ToListAsync();
-
-        var totais = pessoas.Select(p =>
-        {
-            var receitas = p.Transacoes
-                .Where(t => t.Tipo == TipoTransacao.Receita)
-                .Sum(t => t.Valor);
-
-            var despesas = p.Transacoes
-                .Where(t => t.Tipo == TipoTransacao.Despesa)
-                .Sum(t => t.Valor);
-
-            return new TotalPorPessoaDto(p.Id, p.Nome, receitas, despesas, receitas - despesas);
-        }).ToList();
+            .GroupJoin(
+                _context.Transacoes,
+                pessoa => pessoa.Id,
+                transacao => transacao.PessoaId,
+                (pessoa, transacoes) => new TotalPorPessoaDto(
+                    pessoa.Id,
+                    pessoa.Nome,
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => t.Valor),
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => t.Valor),
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => t.Valor)
+                    - transacoes.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => t.Valor)
+                ))
+            .ToListAsync(cancellationToken);
 
         var totalReceitas = totais.Sum(t => t.TotalReceitas);
         var totalDespesas = totais.Sum(t => t.TotalDespesas);
@@ -53,31 +49,26 @@ public class RelatorioService : IRelatorioService
     }
 
     /// <summary>
-    /// Agrega as transações de cada categoria e calcula:
-    ///   - TotalReceitas: soma de todas as transações do tipo Receita nesta categoria.
-    ///   - TotalDespesas: soma de todas as transações do tipo Despesa nesta categoria.
-    ///   - Saldo: TotalReceitas − TotalDespesas.
-    /// Ao final, inclui o consolidado de todas as categorias.
+    /// Agrega as transações no banco por categoria usando GroupJoin,
+    /// garantindo que categorias sem transações também apareçam no resultado.
     /// </summary>
-    public async Task<RelatorioCategoriasDto> ObterTotaisPorCategoriaAsync()
+    public async Task<RelatorioCategoriasDto> ObterTotaisPorCategoriaAsync(CancellationToken cancellationToken = default)
     {
-        var categorias = await _context.Categorias
+        var totais = await _context.Categorias
             .AsNoTracking()
-            .Include(c => c.Transacoes)
-            .ToListAsync();
-
-        var totais = categorias.Select(c =>
-        {
-            var receitas = c.Transacoes
-                .Where(t => t.Tipo == TipoTransacao.Receita)
-                .Sum(t => t.Valor);
-
-            var despesas = c.Transacoes
-                .Where(t => t.Tipo == TipoTransacao.Despesa)
-                .Sum(t => t.Valor);
-
-            return new TotalPorCategoriaDto(c.Id, c.Descricao, receitas, despesas, receitas - despesas);
-        }).ToList();
+            .GroupJoin(
+                _context.Transacoes,
+                categoria => categoria.Id,
+                transacao => transacao.CategoriaId,
+                (categoria, transacoes) => new TotalPorCategoriaDto(
+                    categoria.Id,
+                    categoria.Descricao,
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => t.Valor),
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => t.Valor),
+                    transacoes.Where(t => t.Tipo == TipoTransacao.Receita).Sum(t => t.Valor)
+                    - transacoes.Where(t => t.Tipo == TipoTransacao.Despesa).Sum(t => t.Valor)
+                ))
+            .ToListAsync(cancellationToken);
 
         var totalReceitas = totais.Sum(t => t.TotalReceitas);
         var totalDespesas = totais.Sum(t => t.TotalDespesas);

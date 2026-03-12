@@ -123,10 +123,10 @@ C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosRe.86FDE8E5.Up2Date
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.dll
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\refint\GastosResidenciais.API.dll
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.pdb
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.genruntimeconfig.cache
 C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\ref\GastosResidenciais.API.dll
+C:\Users\elson.lopes\source\repos\gastos-residenciais\backend\GastosResidenciais.API\obj\Debug\net8.0\GastosResidenciais.API.sourcelink.json

@@ -9,6 +9,7 @@ namespace GastosResidenciais.API.Services;
 /// </summary>
 public interface ICategoriaService
 {
-    Task<IEnumerable<CategoriaDto>> ListarAsync();
-    Task<CategoriaDto> CriarAsync(CriarCategoriaDto dto);
+    Task<IEnumerable<CategoriaDto>> ListarAsync(CancellationToken cancellationToken = default);
+    Task<CategoriaDto?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<CategoriaDto> CriarAsync(CriarCategoriaDto dto, CancellationToken cancellationToken = default);
 }

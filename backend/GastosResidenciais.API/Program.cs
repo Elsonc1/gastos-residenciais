@@ -1,16 +1,20 @@
 using GastosResidenciais.API.Data;
+using GastosResidenciais.API.Middlewares;
 using GastosResidenciais.API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ── Controllers ───────────────────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // Serializa enums como strings legíveis em vez de inteiros
         options.JsonSerializerOptions.Converters.Add(
             new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
+// ── Swagger / OpenAPI ─────────────────────────────────────────────────────────
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -22,17 +26,20 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// ── Banco de Dados (SQLite) ───────────────────────────────────────────────────
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("DefaultConnection")
         ?? "Data Source=gastos_residenciais.db"
     ));
 
+// ── Serviços de Domínio (Injeção de Dependência) ──────────────────────────────
 builder.Services.AddScoped<IPessoaService, PessoaService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<ITransacaoService, TransacaoService>();
 builder.Services.AddScoped<IRelatorioService, RelatorioService>();
 
+// ── CORS ─────────────────────────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
@@ -43,11 +50,16 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// ── Criação automática do banco de dados ─────────────────────────────────────
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
 }
+
+// ── Pipeline HTTP ─────────────────────────────────────────────────────────────
+// Middleware de exceções deve ser o primeiro para capturar erros de qualquer camada
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

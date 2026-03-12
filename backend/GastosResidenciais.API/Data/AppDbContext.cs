@@ -5,8 +5,7 @@ namespace GastosResidenciais.API.Data;
 
 /// <summary>
 /// Contexto principal do Entity Framework Core.
-/// Configura os mapeamentos das entidades para o banco SQLite e define
-/// o comportamento de exclusão em cascata para a relação Pessoa → Transações.
+/// Configura mapeamentos, relacionamentos, índices e comportamentos de exclusão.
 /// </summary>
 public class AppDbContext : DbContext
 {
@@ -18,12 +17,14 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // ── Pessoa ────────────────────────────────────────────────────────────────
         modelBuilder.Entity<Pessoa>()
             .HasMany(p => p.Transacoes)
             .WithOne(t => t.Pessoa)
             .HasForeignKey(t => t.PessoaId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        // ── Categoria ─────────────────────────────────────────────────────────────
         modelBuilder.Entity<Categoria>()
             .HasMany(c => c.Transacoes)
             .WithOne(t => t.Categoria)
@@ -34,8 +35,25 @@ public class AppDbContext : DbContext
             .Property(c => c.Finalidade)
             .HasConversion<int>();
 
+        // ── Transação ─────────────────────────────────────────────────────────────
         modelBuilder.Entity<Transacao>()
             .Property(t => t.Tipo)
             .HasConversion<int>();
+
+        // Precisão decimal para valores monetários (18 dígitos, 2 casas decimais)
+        modelBuilder.Entity<Transacao>()
+            .Property(t => t.Valor)
+            .HasPrecision(18, 2);
+
+        // Índices nas foreign keys melhoram performance de JOINs e relatórios
+        modelBuilder.Entity<Transacao>()
+            .HasIndex(t => t.PessoaId);
+
+        modelBuilder.Entity<Transacao>()
+            .HasIndex(t => t.CategoriaId);
+
+        // Índice composto para consultas de relatório que filtram por tipo
+        modelBuilder.Entity<Transacao>()
+            .HasIndex(t => new { t.PessoaId, t.Tipo });
     }
 }

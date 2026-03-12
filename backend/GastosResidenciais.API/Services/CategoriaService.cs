@@ -19,17 +19,26 @@ public class CategoriaService : ICategoriaService
         _context = context;
     }
 
-    /// <summary>Retorna todas as categorias cadastradas.</summary>
-    public async Task<IEnumerable<CategoriaDto>> ListarAsync()
+    public async Task<IEnumerable<CategoriaDto>> ListarAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Categorias
             .AsNoTracking()
             .Select(c => new CategoriaDto(c.Id, c.Descricao, c.Finalidade))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    /// <summary>Cria uma nova categoria e retorna o registro com o Id gerado.</summary>
-    public async Task<CategoriaDto> CriarAsync(CriarCategoriaDto dto)
+    public async Task<CategoriaDto?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var categoria = await _context.Categorias
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+
+        return categoria is null
+            ? null
+            : new CategoriaDto(categoria.Id, categoria.Descricao, categoria.Finalidade);
+    }
+
+    public async Task<CategoriaDto> CriarAsync(CriarCategoriaDto dto, CancellationToken cancellationToken = default)
     {
         var categoria = new Categoria
         {
@@ -38,7 +47,7 @@ public class CategoriaService : ICategoriaService
         };
 
         _context.Categorias.Add(categoria);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return new CategoriaDto(categoria.Id, categoria.Descricao, categoria.Finalidade);
     }

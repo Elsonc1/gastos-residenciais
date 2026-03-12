@@ -6,7 +6,7 @@ namespace GastosResidenciais.API.Controllers;
 
 /// <summary>
 /// Controller de categorias.
-/// Expõe os endpoints de criação e listagem.
+/// Expõe os endpoints de criação, consulta por Id e listagem.
 /// Categorias não são editáveis nem deletáveis pelo design do sistema,
 /// pois servem como referências históricas das transações.
 /// </summary>
@@ -22,22 +22,29 @@ public class CategoriasController : ControllerBase
         _categoriaService = categoriaService;
     }
 
-    /// <summary>Lista todas as categorias cadastradas.</summary>
     [HttpGet]
-    public async Task<IActionResult> Listar()
+    [ProducesResponseType(typeof(IEnumerable<CategoriaDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Listar(CancellationToken cancellationToken)
     {
-        var categorias = await _categoriaService.ListarAsync();
+        var categorias = await _categoriaService.ListarAsync(cancellationToken);
         return Ok(categorias);
     }
 
-    /// <summary>
-    /// Cria uma nova categoria com sua finalidade (Despesa, Receita ou Ambas).
-    /// O Id é gerado automaticamente.
-    /// </summary>
-    [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] CriarCategoriaDto dto)
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(CategoriaDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterPorId(Guid id, CancellationToken cancellationToken)
     {
-        var categoria = await _categoriaService.CriarAsync(dto);
-        return CreatedAtAction(nameof(Listar), new { id = categoria.Id }, categoria);
+        var categoria = await _categoriaService.ObterPorIdAsync(id, cancellationToken);
+        return categoria is null ? NotFound() : Ok(categoria);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(CategoriaDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Criar([FromBody] CriarCategoriaDto dto, CancellationToken cancellationToken)
+    {
+        var categoria = await _categoriaService.CriarAsync(dto, cancellationToken);
+        return CreatedAtAction(nameof(ObterPorId), new { id = categoria.Id }, categoria);
     }
 }

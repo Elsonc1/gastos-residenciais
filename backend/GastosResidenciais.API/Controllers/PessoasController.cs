@@ -21,45 +21,49 @@ public class PessoasController : ControllerBase
         _pessoaService = pessoaService;
     }
 
-    /// <summary>Lista todas as pessoas cadastradas.</summary>
     [HttpGet]
-    public async Task<IActionResult> Listar()
+    [ProducesResponseType(typeof(IEnumerable<PessoaDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Listar(CancellationToken cancellationToken)
     {
-        var pessoas = await _pessoaService.ListarAsync();
+        var pessoas = await _pessoaService.ListarAsync(cancellationToken);
         return Ok(pessoas);
     }
 
-    /// <summary>Retorna uma pessoa pelo seu Id único.</summary>
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> ObterPorId(Guid id)
+    [ProducesResponseType(typeof(PessoaDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ObterPorId(Guid id, CancellationToken cancellationToken)
     {
-        var pessoa = await _pessoaService.ObterPorIdAsync(id);
+        var pessoa = await _pessoaService.ObterPorIdAsync(id, cancellationToken);
         return pessoa is null ? NotFound() : Ok(pessoa);
     }
 
-    /// <summary>Cria uma nova pessoa. O Id é gerado automaticamente.</summary>
     [HttpPost]
-    public async Task<IActionResult> Criar([FromBody] CriarPessoaDto dto)
+    [ProducesResponseType(typeof(PessoaDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Criar([FromBody] CriarPessoaDto dto, CancellationToken cancellationToken)
     {
-        var pessoa = await _pessoaService.CriarAsync(dto);
+        var pessoa = await _pessoaService.CriarAsync(dto, cancellationToken);
         return CreatedAtAction(nameof(ObterPorId), new { id = pessoa.Id }, pessoa);
     }
 
-    /// <summary>Atualiza nome e/ou idade de uma pessoa existente.</summary>
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Atualizar(Guid id, [FromBody] CriarPessoaDto dto)
+    [ProducesResponseType(typeof(PessoaDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Atualizar(Guid id, [FromBody] CriarPessoaDto dto, CancellationToken cancellationToken)
     {
-        var pessoa = await _pessoaService.AtualizarAsync(id, dto);
+        var pessoa = await _pessoaService.AtualizarAsync(id, dto, cancellationToken);
         return pessoa is null ? NotFound() : Ok(pessoa);
     }
 
-    /// <summary>
-    /// Remove uma pessoa e todas as suas transações (exclusão em cascata).
-    /// </summary>
+    /// <summary>Remove uma pessoa e todas as suas transações (exclusão em cascata).</summary>
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> Deletar(Guid id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Deletar(Guid id, CancellationToken cancellationToken)
     {
-        var deletado = await _pessoaService.DeletarAsync(id);
+        var deletado = await _pessoaService.DeletarAsync(id, cancellationToken);
         return deletado ? NoContent() : NotFound();
     }
 }

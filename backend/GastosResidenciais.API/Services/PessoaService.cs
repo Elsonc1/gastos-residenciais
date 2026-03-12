@@ -20,24 +20,24 @@ public class PessoaService : IPessoaService
         _context = context;
     }
 
-    /// <summary>Retorna todas as pessoas cadastradas.</summary>
-    public async Task<IEnumerable<PessoaDto>> ListarAsync()
+    public async Task<IEnumerable<PessoaDto>> ListarAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Pessoas
             .AsNoTracking()
             .Select(p => new PessoaDto(p.Id, p.Nome, p.Idade))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    /// <summary>Retorna uma pessoa pelo Id, ou null se não encontrada.</summary>
-    public async Task<PessoaDto?> ObterPorIdAsync(Guid id)
+    public async Task<PessoaDto?> ObterPorIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var pessoa = await _context.Pessoas.FindAsync(id);
+        var pessoa = await _context.Pessoas
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
+
         return pessoa is null ? null : new PessoaDto(pessoa.Id, pessoa.Nome, pessoa.Idade);
     }
 
-    /// <summary>Cria uma nova pessoa e retorna o registro criado com o Id gerado.</summary>
-    public async Task<PessoaDto> CriarAsync(CriarPessoaDto dto)
+    public async Task<PessoaDto> CriarAsync(CriarPessoaDto dto, CancellationToken cancellationToken = default)
     {
         var pessoa = new Pessoa
         {
@@ -46,40 +46,31 @@ public class PessoaService : IPessoaService
         };
 
         _context.Pessoas.Add(pessoa);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return new PessoaDto(pessoa.Id, pessoa.Nome, pessoa.Idade);
     }
 
-    /// <summary>
-    /// Atualiza os dados de uma pessoa existente.
-    /// Retorna null se a pessoa não for encontrada.
-    /// </summary>
-    public async Task<PessoaDto?> AtualizarAsync(Guid id, CriarPessoaDto dto)
+    public async Task<PessoaDto?> AtualizarAsync(Guid id, CriarPessoaDto dto, CancellationToken cancellationToken = default)
     {
-        var pessoa = await _context.Pessoas.FindAsync(id);
+        var pessoa = await _context.Pessoas.FindAsync([id], cancellationToken);
         if (pessoa is null) return null;
 
         pessoa.Nome = dto.Nome;
         pessoa.Idade = dto.Idade;
 
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return new PessoaDto(pessoa.Id, pessoa.Nome, pessoa.Idade);
     }
 
-    /// <summary>
-    /// Remove uma pessoa pelo Id.
-    /// As transações vinculadas são deletadas automaticamente pelo banco (cascade).
-    /// Retorna false se a pessoa não for encontrada.
-    /// </summary>
-    public async Task<bool> DeletarAsync(Guid id)
+    public async Task<bool> DeletarAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var pessoa = await _context.Pessoas.FindAsync(id);
+        var pessoa = await _context.Pessoas.FindAsync([id], cancellationToken);
         if (pessoa is null) return false;
 
         _context.Pessoas.Remove(pessoa);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
 
         return true;
     }

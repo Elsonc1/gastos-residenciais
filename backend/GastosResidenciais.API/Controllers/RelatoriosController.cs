@@ -1,3 +1,4 @@
+using GastosResidenciais.API.DTOs;
 using GastosResidenciais.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,25 +21,19 @@ public class RelatoriosController : ControllerBase
         _relatorioService = relatorioService;
     }
 
-    /// <summary>
-    /// Retorna o total de receitas, despesas e saldo para cada pessoa cadastrada,
-    /// além do consolidado geral de todas as pessoas.
-    /// </summary>
     [HttpGet("pessoas")]
-    public async Task<IActionResult> TotaisPorPessoa()
+    [ProducesResponseType(typeof(RelatorioPessoasDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> TotaisPorPessoa(CancellationToken cancellationToken)
     {
-        var relatorio = await _relatorioService.ObterTotaisPorPessoaAsync();
+        var relatorio = await _relatorioService.ObterTotaisPorPessoaAsync(cancellationToken);
         return Ok(relatorio);
     }
 
-    /// <summary>
-    /// Retorna o total de receitas, despesas e saldo para cada categoria cadastrada,
-    /// além do consolidado geral de todas as categorias.
-    /// </summary>
     [HttpGet("categorias")]
-    public async Task<IActionResult> TotaisPorCategoria()
+    [ProducesResponseType(typeof(RelatorioCategoriasDto), StatusCodes.Status200OK)]
+    public async Task<IActionResult> TotaisPorCategoria(CancellationToken cancellationToken)
     {
-        var relatorio = await _relatorioService.ObterTotaisPorCategoriaAsync();
+        var relatorio = await _relatorioService.ObterTotaisPorCategoriaAsync(cancellationToken);
         return Ok(relatorio);
     }
 }
